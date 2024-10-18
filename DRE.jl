@@ -238,7 +238,7 @@ function DRE(::Pump, sim_params::Sim_Params, pass::Int)
         CSV.write("Pow_in_1_RK4.csv", Tables.table(Pow_in), writeheader=true)
         CSV.write("Pow_out_1_RK4.csv", Tables.table(Pow_out), writeheader=true)
     elseif pass == 2
-        CSV.write("N2_RK4.csv", Tables.table(atopop1.N2), writeheader=true)
+        CSV.write("N2_1_RK4.csv", Tables.table(atopop1.N2), writeheader=true)
         CSV.write("max_N2_RK4.csv", Tables.table(max_N2), writeheader=true)
         CSV.write("Pow_in_RK4.csv", Tables.table(Pow_in), writeheader=true)
         CSV.write("Pow_out_RK4.csv", Tables.table(Pow_out), writeheader=true)

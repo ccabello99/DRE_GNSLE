@@ -230,7 +230,7 @@ function RK4IP_step!(At::Vector, A2::Vector, A::Vector, ϕ::Vector, G::Vector,
 end
 
 # Solve GNLSE and DRE for a seed pulse given pumped crystal population
-function RK4IP(sim_params::Sim_Params, pass::Int, visualize::Bool)
+function RK4IP(sim_params::Sim_Params, pass::Int, pumped::Bool, visualize::Bool)
 
     # Get simulation parameters
     @unpack (Nz, z1, dz1, Nt, t1, dt1, T1, t0, c, ϕ0, λs, c, Aeff_s,
