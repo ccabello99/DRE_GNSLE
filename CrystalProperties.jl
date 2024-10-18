@@ -1,10 +1,3 @@
-#using CairoMakie
-using CSV
-using DataFrames
-using ForwardDiff
-using Dierckx
-using Parameters
-
 
 # Absorption and emission cross sections of Sapphire
 function getCrossSections(absorptionCSV::String, emissionCSV::String)

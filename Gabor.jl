@@ -10,26 +10,28 @@ mutable struct Gabor{T}
     ft::Vector{ComplexF64}
     tslide::Vector{T}
     window::Float64
-
-    function Gabor{T}(sim_params::Sim_Params) where T
-        @unpack t1, Nt, τ = sim_params
-        ng = 200
-        nt = Int(Nt / 2 + 1)
-        t_axis = t1
-        Xgt_spec = zeros(T, ng, Nt)
-        g = zeros(T, Nt)
-        gt = zeros(T, Nt)
-        ft = zeros(ComplexF64, Nt)
-        tslide = collect(range(t1[1], t1[end], ng))
-        window = 0.1*τ
-        new{T}(ng, nt, t_axis, Xgt_spec, g, gt, ft, tslide, window)
-    end
 end
+
+
+function Gabor{T}(sim_params::Sim_Params) where T
+    @unpack t1, Nt, τ = sim_params
+    ng = 400
+    nt = Int(Nt / 2 + 1)
+    t_axis = t1
+    Xgt_spec = zeros(T, ng, length(t_axis))
+    g = zeros(T, length(t_axis))
+    gt = zeros(T, length(t_axis))
+    ft = zeros(ComplexF64, length(t_axis))
+    tslide = collect(range(t_axis[1], t_axis[end], ng))
+    window = 1*τ
+    Gabor{T}(ng, nt, t_axis, Xgt_spec, g, gt, ft, tslide, window)
+end
+
 
 # Transform over whole signal
 function gabor_transform!(A::Vector, gabor::Gabor, fft_plan)
     @unpack ng = gabor
-    for t in 1:ng
+    @simd for t in 1:ng
         gabor_transform!(A, gabor, fft_plan, t)
     end
 
@@ -50,7 +52,7 @@ end
 # Transform over specific interval
 function gabor_transform!(A::Vector, gabor::Gabor, fft_plan, int::Vector)
 
-    for t in int[1]:int[end]
+    @simd for t in int[1]:int[end]
         gabor_transform!(A, gabor, fft_plan, t)
     end
 

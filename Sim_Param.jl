@@ -1,4 +1,3 @@
-using Parameters
 
 # Helper functions
 onep5(::Type{T}) where {T<:Number} = convert(T,1.5)
@@ -6,7 +5,16 @@ zerop5(::Type{T}) where {T<:Number} = convert(T,0.5)
 four(::Type{T}) where {T<:Number} = convert(T,4.0)
 two(::Type{T}) where {T<:Number} = convert(T,2.0)
 
-@with_kw struct Sim_Params{T}
+# Compute FWHM of pulse (Y) given its x-axis (X)
+function FWHM(X, Y)
+    half_max = maximum(Y) / 2
+    d = sign.(half_max .- Y[1:end-1]) .- sign.(half_max .- Y[2:end])
+    left_idx = findfirst(d .> 0)
+    right_idx = findlast(d .< 0)
+    return X[right_idx] - X[left_idx]
+end
+
+@with_kw mutable struct Sim_Params{T}
     # Size of the grid
     Nz::Int64
     Lz1::T = 0.08
@@ -32,12 +40,15 @@ two(::Type{T}) where {T<:Number} = convert(T,2.0)
     T1::T = 8e-3 / c
     dt2::T = dz2 / (1 * c)
     T2::T = 197 / c
-    t1::Vector{T} = collect(LinRange(-Nt/2, Nt/2, Nt) .* dt1)
+    #t1::Vector{T} = collect(LinRange(-Nt/2, Nt/2, Nt) .* dt1)
+    t1::Vector{T} = collect(range(-0.5e-12, 0.5e-12, step=0.1e-15))
     t2::Vector{T} = collect(LinRange(1, Nt, Nt) .* dt2)
 
     # Frequency domain
-    fs::T = 1 / dt1
-    freq::Vector{T} = (fs / Nt) .* range(-Nt/2, Nt/2, Nt)
+    #fs::T = 1 / dt1
+    fs::T = 1/0.1e-15
+    #freq::Vector{T} = (fs / Nt) .* range(-Nt/2, Nt/2, Nt)
+    freq::Vector{T} = (fs / length(t1)) .* range(-length(t1)/2, length(t1)/2, length(t1))
 
     # Pulse properties
     λs::T = 785e-9
@@ -45,27 +56,18 @@ two(::Type{T}) where {T<:Number} = convert(T,2.0)
     λp::T = 527e-9
     ω0::T = 2π * (c / λs)
     ϕ0::T = zero(T)
-    #ϕ2::T = zero(T)
-    #ϕ2::T = 1000e-30
-    ϕ2::T = 208000e-30
+    ϕ2::T = zero(T)
+    #ϕ2::T = 1500e-30
+    #ϕ2::T = 208000e-30
     Aeff_p::T = π * (2000e-6)^2 / 2
-    Aeff_s::T = π * (1200e-6)^2 / 2
+    Aeff_s::T = π * 950e-6^2
     #Aeff_s::T = π * (120000e-6)^2 / 2
     τ::T = τlas0 * √(1 + (4 * log(2) * ϕ2 / (τlas0^2))^2)
-    t0::T = -6.67e-11
-    #t0::T = -6.005e-11 #zero(T)
+    #t0::T = -6.67e-11
+    t0::T = zero(T)
 end
 
-# Compute FWHM of pulse (Y) given its x-axis (X)
-function FWHM(X, Y)
-    half_max = maximum(Y) / 2
-    d = sign.(half_max .- Y[1:end-1]) .- sign.(half_max .- Y[2:end])
-    left_idx = findfirst(d .> 0)
-    right_idx = findlast(d .< 0)
-    return X[right_idx] - X[left_idx]
-end
-
-sim_params = Sim_Params{Float64}(Nz=2^18)
+sim_params = Sim_Params{Float64}(Nz=2^12) #Change Nz as wanted
 
 println("Nz : ", sim_params.Nz)
 println("Nt : ", sim_params.Nt)

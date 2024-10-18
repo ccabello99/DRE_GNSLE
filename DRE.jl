@@ -1,13 +1,3 @@
-using LinearAlgebra
-using CSV
-using DataFrames
-using NumericalIntegration
-using Dierckx
-
-include("CrystalProperties.jl")
-include("Sim_Param.jl")
-include("CrankNicolson.jl")
-
 
 struct Pump end
 struct Seed end

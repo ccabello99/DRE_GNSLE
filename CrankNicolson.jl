@@ -1,13 +1,3 @@
-#using CairoMakie
-#using Plots
-using LinearAlgebra
-using SparseArrays
-using CSV
-using DataFrames
-using AMDGPU
-using Parameters
-include("Sim_Param.jl")
-
 
 abstract type CN_Solver end
 struct CN_CPU <: CN_Solver end
