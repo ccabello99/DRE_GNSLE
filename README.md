@@ -17,4 +17,4 @@ In order to use:
 ```julia
     RK4IP(sim_params, pass=<pass_number>, pumped=<true/false>, visualize=<true/false>)
 ```
-- If pumped=true and pass=1, it will use "N2_1_RK4.csv" from pumping stage for initial population in excited state. If pumped=true and pass>1, it will use populations saved after previous pass.
+- If pumped = true and pass = 1, it will use "N2_1_RK4.csv" from pumping stage for initial population in excited state. If pumped=true and pass > 1, it will use populations saved after previous pass.
